@@ -1,0 +1,8 @@
+[
+  {"id":"github-01-repository-main","title":"저장소 메인 화면","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-01-repository-main.png","alt":"toxh13/test-only 저장소의 main 화면"},
+  {"id":"github-04-new-issue","title":"새 Issue 작성","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-04-new-issue.png","alt":"GitHub 새 Issue 작성 화면"},
+  {"id":"github-06-new-pull-request","title":"새 Pull Request 만들기","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-06-new-pull-request.png","alt":"main과 feature/1-member-intro를 비교하는 Pull Request 작성 화면"},
+  {"id":"github-10-files-changed","title":"변경 파일 확인","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-10-files-changed.png","alt":"Pull Request의 Files changed 화면"},
+  {"id":"github-11-review-changes","title":"Review changes 메뉴","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-11-review-changes.png","alt":"Review changes에서 Comment, Approve, Request changes를 선택하는 화면"},
+  {"id":"github-14-merged","title":"병합 완료","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-14-merged.png","alt":"Pull Request가 main에 병합된 화면"}
+]
