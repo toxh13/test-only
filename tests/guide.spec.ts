@@ -30,3 +30,11 @@ test('마스킹 이미지 확대 모달은 Escape로 닫힌다', async ({ page }
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toHaveCount(0);
 });
+
+test('GitHub Desktop 탭은 촬영이 필요한 두 장면을 안내한다', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'GitHub Desktop' }).first().click();
+  await expect(page.getByRole('heading', { name: '버튼으로 배우는 GitHub Desktop' })).toBeVisible();
+  await expect(page.getByText('팀원 2. GitHub Desktop 로그인')).toBeVisible();
+  await expect(page.getByText('팀원 7. Changes 탭')).toBeVisible();
+});
