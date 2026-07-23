@@ -32,7 +32,7 @@ const desktopVisuals: Record<string, Array<{ source: string; alt: string }>> = {
   '4': [{ source: 'desktop-06-branch-menu.png', alt: 'Current branch 메뉴의 New branch 강조 화면' }, { source: 'desktop-07-create-branch.png', alt: 'Create a branch 이름 입력칸 강조 화면' }],
   '5': [{ source: 'desktop-13-changes-develop.png', alt: 'Changes 탭과 변경 파일 강조 화면' }],
   '6': [{ source: 'desktop-13-changes-develop.png', alt: 'Commit 입력과 Commit 버튼 강조 화면' }],
-  '7': [{ source: 'desktop-11-publish-branch.png', alt: 'Publish branch 버튼 강조 화면' }, { source: 'desktop-14-push-develop.png', alt: 'Push origin 버튼 강조 화면' }, { source: 'desktop-15-repo-branch-notice.png', alt: 'Compare and pull request 버튼 강조 화면' }, { source: 'desktop-12-pr-ready.png', alt: 'Create Pull Request 버튼 강조 화면' }, { source: 'desktop-16-pr-form.png', alt: 'Pull Request 작성과 Create pull request 버튼 강조 화면' }],
+  '7': [{ source: 'desktop-11-publish-branch.png', alt: 'Publish branch 버튼 강조 화면' }, { source: 'desktop-14-push-develop.png', alt: 'Push origin 버튼 강조 화면' }, { source: 'desktop-15-repo-branch-notice.png', alt: 'Compare and pull request 버튼 강조 화면' }, { source: 'desktop-12-pr-ready.png', alt: 'Create Pull Request 버튼 강조 화면' }, { source: 'desktop-16-pr-form.png', alt: 'Pull Request 작성과 Create pull request 버튼 강조 화면' }, { source: 'web-02-merge-ready.png', alt: 'Merge pull request 버튼 강조 화면' }, { source: 'web-03-confirm-merge.png', alt: 'Confirm merge 버튼 강조 화면' }, { source: 'web-04-merged.png', alt: 'Merged 상태 강조 화면' }],
 };
 
 function CaptureRequest({ need }: { need: { filename: string; title: string; scene: string; highlight: string } }) {
