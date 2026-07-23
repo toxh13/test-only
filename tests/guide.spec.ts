@@ -2,9 +2,9 @@ import { expect, test } from '@playwright/test';
 
 test('역할 변경과 진행 상태를 저장한다', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: '팀원으로 첫 PR 보내기' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'GitHub 웹에서 첫 PR 보내기' })).toBeVisible();
   await page.getByRole('button', { name: '하는 팀장입니다' }).click();
-  await expect(page.getByRole('heading', { name: '안전한 작업 흐름 만들기' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'GitHub 웹에서 안전한 협업 흐름 만들기' })).toBeVisible();
   await page.getByRole('button', { name: '하는 팀원입니다' }).click();
   await page.getByRole('checkbox').check();
   await page.reload();
@@ -13,8 +13,8 @@ test('역할 변경과 진행 상태를 저장한다', async ({ page }) => {
 
 test('단계 이동과 문제 안내가 동작한다', async ({ page }) => {
   await page.goto('/');
-  await page.locator('.row').filter({ hasText: 'Push로 GitHub에 공유' }).click();
-  await expect(page.getByRole('heading', { name: 'Push로 GitHub에 공유' })).toBeVisible();
+  await page.locator('.row').filter({ hasText: 'Pull Request로 검토 요청' }).click();
+  await expect(page.getByRole('heading', { name: 'Pull Request로 검토 요청' })).toBeVisible();
   await page.getByRole('button', { name: '문제가 생겼나요?' }).click();
   await expect(page.getByRole('heading', { name: '문제가 생겼나요?' })).toBeVisible();
   await expect(page.getByRole('heading', { name: '저장소가 보이지 않음' })).toBeVisible();
@@ -31,7 +31,7 @@ test('마스킹 이미지 확대 모달은 Escape로 닫힌다', async ({ page }
 test('GitHub Desktop 탭은 재촬영 항목 없이 실제 화면을 안내한다', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'GitHub Desktop' }).first().click();
-  await expect(page.getByRole('heading', { name: '버튼으로 배우는 GitHub Desktop' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '내 컴퓨터에서 작업하기' })).toBeVisible();
   await expect(page.getByAltText('GitHub Desktop Options의 Sign in to GitHub.com 버튼 강조 화면')).toBeVisible();
   await expect(page.getByAltText('Changes 탭과 변경 파일 강조 화면')).toBeVisible();
   await expect(page.getByText('재촬영 필요')).toHaveCount(0);

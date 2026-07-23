@@ -109,9 +109,9 @@ const desktopSteps = [
   ],
   [
     "7",
-    "Publish / Push와 마무리",
-    "처음에는 Publish branch, 다음부터는 Push origin입니다. 병합 뒤 main으로 전환해 Pull origin을 누릅니다.",
-    "Push 버튼과 main 전환 뒤 Pull origin 버튼",
+    "Publish / Push 준비",
+    "처음에는 Publish branch, 다음부터는 Push origin입니다. Push가 끝나면 GitHub 웹 실습 가이드로 이동해 PR을 엽니다.",
+    "Publish branch와 Push origin 버튼",
   ],
 ] as const;
 const desktopVisuals: Record<string, Array<{ source: string; alt: string }>> = {
@@ -177,23 +177,9 @@ const desktopVisuals: Record<string, Array<{ source: string; alt: string }>> = {
       alt: "Push origin 버튼 강조 화면",
     },
     {
-      source: "desktop-15-repo-branch-notice.png",
-      alt: "Compare and pull request 버튼 강조 화면",
-    },
-    {
       source: "desktop-12-pr-ready.png",
       alt: "Create Pull Request 버튼 강조 화면",
     },
-    {
-      source: "desktop-16-pr-form.png",
-      alt: "Pull Request 작성과 Create pull request 버튼 강조 화면",
-    },
-    {
-      source: "web-02-merge-ready.png",
-      alt: "Merge pull request 버튼 강조 화면",
-    },
-    { source: "web-03-confirm-merge.png", alt: "Confirm merge 버튼 강조 화면" },
-    { source: "web-04-merged.png", alt: "Merged 상태 강조 화면" },
   ],
 };
 
@@ -350,10 +336,10 @@ function DesktopGuide() {
   return (
     <section className="page desktop-page">
       <p className="eyebrow">GITHUB DESKTOP</p>
-      <h2>버튼으로 배우는 GitHub Desktop</h2>
+      <h2>내 컴퓨터에서 작업하기</h2>
       <p>
-        아래 순서는 팀원이 실제로 작업할 때 보는 흐름입니다. 제공받은 화면은
-        개인정보를 가리고 강조 표시를 더해 넣었습니다.
+        이 탭은 GitHub Desktop의 버튼 조작만 연습합니다. Clone·Branch·Commit·Push·Pull을
+        끝내면 GitHub 웹의 실습 가이드에서 PR과 리뷰를 이어서 진행하세요.
       </p>
       <div className="desktop-grid">
         {desktopSteps.map(([number, title, instruction, capture]) => (
@@ -387,6 +373,11 @@ function DesktopGuide() {
   );
 }
 
+const webLessons: Record<Role, Lesson[]> = {
+  member: lessons.member.filter((lesson) => lesson.tool === "GitHub 웹"),
+  leader: lessons.leader.filter((lesson) => lesson.tool === "GitHub 웹"),
+};
+
 export function App() {
   const [role, setRole] = useState<Role>("member");
   const [view, setView] = useState<View>("guide");
@@ -396,7 +387,7 @@ export function App() {
   const [done, setDone] = useState<string[]>(() =>
     JSON.parse(localStorage.getItem("guide-progress") || "[]"),
   );
-  const list = lessons[role];
+  const list = webLessons[role];
   const lesson = list[step];
   const progress = Math.round(
     (list.filter((item) => done.includes(`${role}:${item.id}`)).length /
@@ -532,12 +523,12 @@ export function App() {
                   </p>
                   <h2>
                     {role === "member"
-                      ? "팀원으로 첫 PR 보내기"
-                      : "안전한 작업 흐름 만들기"}
+                      ? "GitHub 웹에서 첫 PR 보내기"
+                      : "GitHub 웹에서 안전한 협업 흐름 만들기"}
                   </h2>
                   <p>
-                    실제 “팀원 소개 파일 추가” 프로젝트 변경 사례를 따라, 한
-                    단계씩 진행합니다.
+                    GitHub Desktop에서 준비한 변경을 웹에서 Issue·PR·리뷰·병합으로
+                    완성합니다. 로컬 작업은 GitHub Desktop 메뉴에서 따로 연습하세요.
                   </p>
                 </div>
                 <div className="progress">
@@ -567,9 +558,8 @@ export function App() {
                 </section>
               )}
               <div className="notice">
-                단계 제목을 누르면 오른쪽의 큰 실습 카드가 바뀝니다. 설명은
-                카드에서 전체 문장으로 읽고, 목록은 단계 이름과 도구만 빠르게
-                확인하세요.
+                이 탭은 GitHub 웹 협업 단계만 다룹니다. 파일 수정·Commit·Push·Pull은
+                GitHub Desktop 탭에서 먼저 연습한 뒤, 여기서 PR과 리뷰를 진행하세요.
               </div>
               <div className="columns">
                 <section>
