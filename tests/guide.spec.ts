@@ -11,12 +11,10 @@ test('역할 변경과 진행 상태를 저장한다', async ({ page }) => {
   await expect(page.getByRole('checkbox')).toBeChecked();
 });
 
-test('단계 이동, 문제 안내, 시뮬레이션이 동작한다', async ({ page }) => {
+test('단계 이동과 문제 안내가 동작한다', async ({ page }) => {
   await page.goto('/');
   await page.locator('.row').filter({ hasText: 'Push로 GitHub에 공유' }).click();
   await expect(page.getByRole('heading', { name: 'Push로 GitHub에 공유' })).toBeVisible();
-  await page.getByRole('button', { name: /Push origin을 눌러 GitHub에 브랜치를 올린다/ }).click();
-  await expect(page.getByRole('status')).toContainText('정답입니다');
   await page.getByRole('button', { name: '문제가 생겼나요?' }).click();
   await expect(page.getByRole('heading', { name: '문제가 생겼나요?' })).toBeVisible();
   await expect(page.getByRole('heading', { name: '저장소가 보이지 않음' })).toBeVisible();
@@ -44,6 +42,18 @@ test('깃허브란 탭은 GitHub와 Desktop의 역할을 설명한다', async ({
   await expect(page.getByRole('heading', { name: '깃허브란?' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'GitHub Desktop은 무엇인가요?' })).toBeVisible();
   await expect(page.getByRole('link', { name: /GitHub Desktop 공식 다운로드/ })).toHaveAttribute('href', 'https://desktop.github.com/');
+});
+
+test('왼쪽 메뉴가 초보자용 순서로 배치된다', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('nav button')).toHaveText([
+    '깃허브란?',
+    '용어부터 배우기',
+    'GitHub Desktop',
+    '실습 가이드',
+    '문제가 생겼나요?',
+  ]);
+  await expect(page.getByText('1분 확인')).toHaveCount(0);
 });
 
 test('팀장 4번은 실제 적용한 규칙 화면을 보여준다', async ({ page }) => {
