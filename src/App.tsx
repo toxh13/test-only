@@ -28,7 +28,11 @@ const desktopSteps = [
 const desktopVisuals: Record<string, Array<{ source: string; alt: string }>> = {
   '1': [{ source: 'desktop-01-sign-in-options.png', alt: 'GitHub Desktop Options의 Sign in to GitHub.com 버튼 강조 화면' }, { source: 'desktop-02-authorize-open.png', alt: 'Chrome에서 GitHubDesktop.exe 열기 버튼을 강조한 화면' }],
   '2': [{ source: 'desktop-03-clone-menu.png', alt: 'File 메뉴의 Clone repository 항목을 강조한 화면' }, { source: 'desktop-04-clone-dialog.png', alt: 'Clone a repository 창의 Clone 버튼 강조 화면' }],
-  '3': [{ source: 'desktop-05-main-fetch.png', alt: 'Current branch main과 Fetch origin 강조 화면' }],
+  '3': [{ source: 'desktop-05-main-fetch.png', alt: 'Current branch main과 Fetch origin 강조 화면' }, { source: 'desktop-10-fetch-warning.png', alt: '원격 Commit이 있어 Fetch가 필요한 경고 화면' }],
+  '4': [{ source: 'desktop-06-branch-menu.png', alt: 'Current branch 메뉴의 New branch 강조 화면' }, { source: 'desktop-07-create-branch.png', alt: 'Create a branch 이름 입력칸 강조 화면' }],
+  '5': [{ source: 'desktop-13-changes-develop.png', alt: 'Changes 탭과 변경 파일 강조 화면' }],
+  '6': [{ source: 'desktop-13-changes-develop.png', alt: 'Commit 입력과 Commit 버튼 강조 화면' }],
+  '7': [{ source: 'desktop-11-publish-branch.png', alt: 'Publish branch 버튼 강조 화면' }, { source: 'desktop-14-push-develop.png', alt: 'Push origin 버튼 강조 화면' }, { source: 'desktop-15-repo-branch-notice.png', alt: 'Compare and pull request 버튼 강조 화면' }, { source: 'desktop-12-pr-ready.png', alt: 'Create Pull Request 버튼 강조 화면' }, { source: 'desktop-16-pr-form.png', alt: 'Pull Request 작성과 Create pull request 버튼 강조 화면' }],
 };
 
 function CaptureRequest({ need }: { need: { filename: string; title: string; scene: string; highlight: string } }) {
