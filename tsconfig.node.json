@@ -1,1 +1,1 @@
-{"compilerOptions":{"composite":true,"skipLibCheck":true,"module":"ESNext","moduleResolution":"Bundler","types":["node"]},"include":["vite.config.ts","scripts/**/*.ts","playwright.config.ts","src/data/**/*.ts"]}
+{"compilerOptions":{"skipLibCheck":true,"module":"ESNext","moduleResolution":"Bundler","noEmit":true,"types":["node"]},"include":["vite.config.ts","scripts/**/*.ts","playwright.config.ts","src/data/**/*.ts"]}

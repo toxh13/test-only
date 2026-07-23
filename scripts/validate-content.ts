@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
+import '../src/data/captured';
 import { lessons, problems, terms } from '../src/data/content';
 
 const requiredDocs = ['docs/SCREENSHOT_CHECKLIST.md', 'docs/PRIVACY_MASKING_GUIDE.md', 'docs/CONTENT_SOURCES.md', 'docs/MAINTENANCE_GUIDE.md'];
