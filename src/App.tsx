@@ -25,10 +25,10 @@ const desktopSteps = [
   ['6', 'Commit', 'Summary에 무엇을 바꿨는지 쓰고 Commit to feature/…를 누릅니다. Commit은 내 컴퓨터 기록입니다.', 'Summary 입력칸과 Commit 버튼'],
   ['7', 'Publish / Push와 마무리', '처음에는 Publish branch, 다음부터는 Push origin입니다. 병합 뒤 main으로 전환해 Pull origin을 누릅니다.', 'Push 버튼과 main 전환 뒤 Pull origin 버튼'],
 ] as const;
-const desktopVisuals: Record<string, { source: string; alt: string }> = {
-  '1': { source: 'desktop-01-sign-in-options.png', alt: 'GitHub Desktop Options의 Sign in to GitHub.com 버튼 강조 화면' },
-  '2': { source: 'desktop-04-clone-dialog.png', alt: 'Clone a repository 창의 Clone 버튼 강조 화면' },
-  '3': { source: 'desktop-05-main-fetch.png', alt: 'Current branch main과 Fetch origin 강조 화면' },
+const desktopVisuals: Record<string, Array<{ source: string; alt: string }>> = {
+  '1': [{ source: 'desktop-01-sign-in-options.png', alt: 'GitHub Desktop Options의 Sign in to GitHub.com 버튼 강조 화면' }, { source: 'desktop-02-authorize-open.png', alt: 'Chrome에서 GitHubDesktop.exe 열기 버튼을 강조한 화면' }],
+  '2': [{ source: 'desktop-03-clone-menu.png', alt: 'File 메뉴의 Clone repository 항목을 강조한 화면' }, { source: 'desktop-04-clone-dialog.png', alt: 'Clone a repository 창의 Clone 버튼 강조 화면' }],
+  '3': [{ source: 'desktop-05-main-fetch.png', alt: 'Current branch main과 Fetch origin 강조 화면' }],
 };
 
 function CaptureRequest({ need }: { need: { filename: string; title: string; scene: string; highlight: string } }) {
@@ -46,7 +46,7 @@ function Visual({ lesson, open }: { lesson: Lesson; open: (src: string, alt: str
 }
 
 function DesktopGuide() {
-  return <section className="page desktop-page"><p className="eyebrow">GITHUB DESKTOP</p><h2>버튼으로 배우는 GitHub Desktop</h2><p>아래 순서는 팀원이 실제로 작업할 때 보는 흐름입니다. 제공받은 화면은 개인정보를 가리고 강조 표시를 더해 넣었습니다.</p><div className="desktop-grid">{desktopSteps.map(([number, title, instruction, capture]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{instruction}</p>{desktopVisuals[number] && <figure className="desktop-shot"><img src={`${import.meta.env.BASE_URL}annotated/desktop/${desktopVisuals[number].source}`} alt={desktopVisuals[number].alt} /><figcaption>실제 화면 예시</figcaption></figure>}<small>촬영 가이드: {capture}</small></article>)}</div><section className="desktop-warning"><b>가장 많이 헷갈리는 두 가지</b><p><strong>Commit</strong>은 내 컴퓨터에 기록하는 일이고, <strong>Push / Publish branch</strong>는 그 기록을 GitHub에 공유하는 일입니다. <strong>Fetch</strong>는 새 변경이 있는지 확인하고, <strong>Pull</strong>은 새 변경을 실제로 내려받습니다.</p></section><div className="capture-grid"><CaptureRequest need={captureNeeds.changes} /><CaptureRequest need={captureNeeds.review} /></div></section>;
+  return <section className="page desktop-page"><p className="eyebrow">GITHUB DESKTOP</p><h2>버튼으로 배우는 GitHub Desktop</h2><p>아래 순서는 팀원이 실제로 작업할 때 보는 흐름입니다. 제공받은 화면은 개인정보를 가리고 강조 표시를 더해 넣었습니다.</p><div className="desktop-grid">{desktopSteps.map(([number, title, instruction, capture]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{instruction}</p>{desktopVisuals[number]?.map((image) => <figure className="desktop-shot" key={image.source}><img src={`${import.meta.env.BASE_URL}annotated/desktop/${image.source}`} alt={image.alt} /><figcaption>실제 화면 예시</figcaption></figure>)}<small>촬영 가이드: {capture}</small></article>)}</div><section className="desktop-warning"><b>가장 많이 헷갈리는 두 가지</b><p><strong>Commit</strong>은 내 컴퓨터에 기록하는 일이고, <strong>Push / Publish branch</strong>는 그 기록을 GitHub에 공유하는 일입니다. <strong>Fetch</strong>는 새 변경이 있는지 확인하고, <strong>Pull</strong>은 새 변경을 실제로 내려받습니다.</p></section><div className="capture-grid"><CaptureRequest need={captureNeeds.changes} /><CaptureRequest need={captureNeeds.review} /></div></section>;
 }
 
 function Simulation() {
