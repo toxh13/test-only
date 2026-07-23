@@ -8,8 +8,9 @@ const errors: string[] = [];
 if (all.length < 15 || terms.length < 8 || problems.length < 6) errors.push('학습 콘텐츠 최소 수량이 부족합니다.');
 for (const lesson of all) for (const [key, value] of Object.entries(lesson)) if (key !== 'visual' && (!value || typeof value !== 'string')) errors.push(`${lesson.id}.${key}가 비어 있습니다.`);
 for (const lesson of all) if (lesson.visual) {
-  const filename = lesson.visual.startsWith('focus-') ? `${lesson.visual}.png` : lesson.visual.replace('.png', '-annotated.png');
-  if (!existsSync(`public/annotated/github/${filename}`)) errors.push(`${lesson.id}의 공개 이미지가 없습니다: ${filename}`);
+  const desktop = lesson.visual.startsWith('desktop:');
+  const filename = desktop ? lesson.visual.replace('desktop:', '') : lesson.visual.startsWith('focus-') ? `${lesson.visual}.png` : lesson.visual.replace('.png', '-annotated.png');
+  if (!existsSync(`public/annotated/${desktop ? 'desktop' : 'github'}/${filename}`)) errors.push(`${lesson.id}의 공개 이미지가 없습니다: ${filename}`);
 }
 for (const doc of requiredDocs) if (!existsSync(doc)) errors.push(`필수 문서 누락: ${doc}`);
 const metadata = JSON.parse(readFileSync('public/screenshots/metadata.json', 'utf8')) as Array<{ image: string; status: string }>;

@@ -31,10 +31,11 @@ test('마스킹 이미지 확대 모달은 Escape로 닫힌다', async ({ page }
   await expect(page.getByRole('dialog')).toHaveCount(0);
 });
 
-test('GitHub Desktop 탭은 촬영이 필요한 두 장면을 안내한다', async ({ page }) => {
+test('GitHub Desktop 탭은 실제 화면과 남은 촬영 장면을 안내한다', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'GitHub Desktop' }).first().click();
   await expect(page.getByRole('heading', { name: '버튼으로 배우는 GitHub Desktop' })).toBeVisible();
-  await expect(page.getByText('팀원 2. GitHub Desktop 로그인')).toBeVisible();
+  await expect(page.getByAltText('GitHub Desktop Options의 Sign in to GitHub.com 버튼 강조 화면')).toBeVisible();
   await expect(page.getByText('팀원 7. Changes 탭')).toBeVisible();
+  await expect(page.getByText('팀장 4. PR 파일 검토')).toBeVisible();
 });

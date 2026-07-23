@@ -25,6 +25,11 @@ const desktopSteps = [
   ['6', 'Commit', 'Summary에 무엇을 바꿨는지 쓰고 Commit to feature/…를 누릅니다. Commit은 내 컴퓨터 기록입니다.', 'Summary 입력칸과 Commit 버튼'],
   ['7', 'Publish / Push와 마무리', '처음에는 Publish branch, 다음부터는 Push origin입니다. 병합 뒤 main으로 전환해 Pull origin을 누릅니다.', 'Push 버튼과 main 전환 뒤 Pull origin 버튼'],
 ] as const;
+const desktopVisuals: Record<string, { source: string; alt: string }> = {
+  '1': { source: 'desktop-01-sign-in-options.png', alt: 'GitHub Desktop Options의 Sign in to GitHub.com 버튼 강조 화면' },
+  '2': { source: 'desktop-04-clone-dialog.png', alt: 'Clone a repository 창의 Clone 버튼 강조 화면' },
+  '3': { source: 'desktop-05-main-fetch.png', alt: 'Current branch main과 Fetch origin 강조 화면' },
+};
 
 function CaptureRequest({ need }: { need: { filename: string; title: string; scene: string; highlight: string } }) {
   return <section className="capture-request"><p className="eyebrow">재촬영 필요</p><h4>{need.title}</h4><p><b>찍을 장면:</b> {need.scene}</p><p><b>강조할 곳:</b> {need.highlight}</p><code>public/annotated/desktop/{need.filename}</code><small>개인 계정 이름·이메일·알림·로컬 폴더 경로는 가린 뒤, 전체 화면과 강조 확대 화면을 각각 1장씩 준비하세요.</small></section>;
@@ -33,14 +38,15 @@ function CaptureRequest({ need }: { need: { filename: string; title: string; sce
 function Visual({ lesson, open }: { lesson: Lesson; open: (src: string, alt: string) => void }) {
   const need = captureNeeds[lesson.id];
   if (!lesson.visual) return need ? <CaptureRequest need={need} /> : <div className="visual missing"><strong>이 단계는 화면보다 작업 확인이 중요합니다.</strong><small>{lesson.tool}에서 안내 문장을 따라 진행하세요.</small></div>;
-  const filename = lesson.visual.startsWith('focus-') ? `${lesson.visual}.png` : lesson.visual.replace('.png', '-annotated.png');
-  const src = `${import.meta.env.BASE_URL}annotated/github/${filename}`;
-  const alt = `${lesson.title}: 눌러야 할 위치를 표시한 개인정보 마스킹 GitHub 화면`;
+  const desktop = lesson.visual.startsWith('desktop:');
+  const filename = desktop ? lesson.visual.replace('desktop:', '') : lesson.visual.startsWith('focus-') ? `${lesson.visual}.png` : lesson.visual.replace('.png', '-annotated.png');
+  const src = `${import.meta.env.BASE_URL}annotated/${desktop ? 'desktop' : 'github'}/${filename}`;
+  const alt = `${lesson.title}: 눌러야 할 위치를 표시한 개인정보 마스킹 ${desktop ? 'GitHub Desktop' : 'GitHub'} 화면`;
   return <figure className="visual captured"><button className="image-button" onClick={() => open(src, alt)} aria-label={`${lesson.title} 이미지 확대 보기`}><img src={src} alt={alt} onError={(event) => event.currentTarget.closest('figure')?.classList.add('broken')} /></button><figcaption><button onClick={() => open(src, alt)}>확대 보기</button> · 개인정보 마스킹본</figcaption></figure>;
 }
 
 function DesktopGuide() {
-  return <section className="page desktop-page"><p className="eyebrow">GITHUB DESKTOP</p><h2>버튼으로 배우는 GitHub Desktop</h2><p>아래 순서는 팀원이 실제로 작업할 때 보는 흐름입니다. 아직 촬영하지 않은 화면은 필요한 장면과 강조 위치를 적어 두었습니다.</p><div className="desktop-grid">{desktopSteps.map(([number, title, instruction, capture]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{instruction}</p><small>촬영 가이드: {capture}</small></article>)}</div><section className="desktop-warning"><b>가장 많이 헷갈리는 두 가지</b><p><strong>Commit</strong>은 내 컴퓨터에 기록하는 일이고, <strong>Push / Publish branch</strong>는 그 기록을 GitHub에 공유하는 일입니다. <strong>Fetch</strong>는 새 변경이 있는지 확인하고, <strong>Pull</strong>은 새 변경을 실제로 내려받습니다.</p></section><div className="capture-grid"><CaptureRequest need={captureNeeds.desktop} /><CaptureRequest need={captureNeeds.changes} /></div></section>;
+  return <section className="page desktop-page"><p className="eyebrow">GITHUB DESKTOP</p><h2>버튼으로 배우는 GitHub Desktop</h2><p>아래 순서는 팀원이 실제로 작업할 때 보는 흐름입니다. 제공받은 화면은 개인정보를 가리고 강조 표시를 더해 넣었습니다.</p><div className="desktop-grid">{desktopSteps.map(([number, title, instruction, capture]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{instruction}</p>{desktopVisuals[number] && <figure className="desktop-shot"><img src={`${import.meta.env.BASE_URL}annotated/desktop/${desktopVisuals[number].source}`} alt={desktopVisuals[number].alt} /><figcaption>실제 화면 예시</figcaption></figure>}<small>촬영 가이드: {capture}</small></article>)}</div><section className="desktop-warning"><b>가장 많이 헷갈리는 두 가지</b><p><strong>Commit</strong>은 내 컴퓨터에 기록하는 일이고, <strong>Push / Publish branch</strong>는 그 기록을 GitHub에 공유하는 일입니다. <strong>Fetch</strong>는 새 변경이 있는지 확인하고, <strong>Pull</strong>은 새 변경을 실제로 내려받습니다.</p></section><div className="capture-grid"><CaptureRequest need={captureNeeds.changes} /><CaptureRequest need={captureNeeds.review} /></div></section>;
 }
 
 function Simulation() {
