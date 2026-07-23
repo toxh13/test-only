@@ -391,36 +391,6 @@ function DesktopGuide() {
   );
 }
 
-function Simulation() {
-  const [answer, setAnswer] = useState<string | null>(null);
-  return (
-    <section className="simulation">
-      <p className="eyebrow">1분 확인</p>
-      <h3>Commit을 마친 뒤, 팀원이 변경을 보게 하려면?</h3>
-      {[
-        ["commit", "Commit만 하고 팀원에게 완료라고 알린다"],
-        ["push", "Push origin을 눌러 GitHub에 브랜치를 올린다"],
-        ["main", "main 브랜치에서 파일을 다시 수정한다"],
-      ].map(([id, label]) => (
-        <button
-          key={id}
-          className={answer === id ? (id === "push" ? "correct" : "wrong") : ""}
-          onClick={() => setAnswer(id)}
-        >
-          {label}
-        </button>
-      ))}
-      {answer && (
-        <p role="status">
-          {answer === "push"
-            ? "정답입니다. Commit은 내 컴퓨터의 기록이고 Push가 GitHub에 공유하는 단계입니다."
-            : "다시 생각해 보세요. 팀원이 보려면 GitHub에 브랜치를 올리는 Push가 필요합니다."}
-        </p>
-      )}
-    </section>
-  );
-}
-
 export function App() {
   const [role, setRole] = useState<Role>("member");
   const [view, setView] = useState<View>("guide");
@@ -495,10 +465,16 @@ export function App() {
           </p>
           <nav>
             <button
-              className={view === "guide" ? "on" : ""}
-              onClick={() => setView("guide")}
+              className={view === "github" ? "on" : ""}
+              onClick={() => setView("github")}
             >
-              실습 가이드
+              깃허브란?
+            </button>
+            <button
+              className={view === "terms" ? "on" : ""}
+              onClick={() => setView("terms")}
+            >
+              용어부터 배우기
             </button>
             <button
               className={view === "desktop" ? "on" : ""}
@@ -507,22 +483,16 @@ export function App() {
               GitHub Desktop
             </button>
             <button
-              className={view === "github" ? "on" : ""}
-              onClick={() => setView("github")}
+              className={view === "guide" ? "on" : ""}
+              onClick={() => setView("guide")}
             >
-              깃허브란?
+              실습 가이드
             </button>
             <button
               className={view === "problem" ? "on" : ""}
               onClick={() => setView("problem")}
             >
               문제가 생겼나요?
-            </button>
-            <button
-              className={view === "terms" ? "on" : ""}
-              onClick={() => setView("terms")}
-            >
-              용어부터 배우기
             </button>
           </nav>
           <hr />
@@ -696,7 +666,6 @@ export function App() {
                   </div>
                 </article>
               </div>
-              {role === "member" && <Simulation />}
             </>
           )}
           {view === "problem" && (
