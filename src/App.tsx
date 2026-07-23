@@ -383,10 +383,6 @@ function DesktopGuide() {
           <strong>Pull</strong>은 새 변경을 실제로 내려받습니다.
         </p>
       </section>
-      <div className="capture-grid">
-        <CaptureRequest need={captureNeeds.changes} />
-        <CaptureRequest need={captureNeeds.review} />
-      </div>
     </section>
   );
 }
