@@ -1,0 +1,16 @@
+.github-intro .page-lead{max-width:760px;color:#5b7064;font-size:15px;line-height:1.8}
+.github-intro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.github-intro-grid article{background:#fff;border:1px solid #e0e8df;border-radius:10px;padding:20px}
+.github-intro-grid span{color:#75942d;font-size:12px;font-weight:bold}
+.github-intro-grid h3{font-size:17px;margin:12px 0 8px}
+.github-intro-grid p,.desktop-explainer p,.desktop-explainer li,.github-start div{font-size:13px;color:#5b7064;line-height:1.7}
+.desktop-explainer{margin-top:24px;background:#17382d;color:#eff6e9;border-radius:12px;padding:26px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px}
+.desktop-explainer h3{font-size:22px;margin:8px 0}
+.desktop-explainer p{color:#c7d9c8}
+.desktop-explainer a{display:inline-block;margin-top:8px;color:#e3f1b5;font-size:13px;font-weight:bold;border-bottom:1px solid #8ea25c}
+.desktop-explainer ol{margin:8px 0;padding-left:22px}
+.desktop-explainer li{color:#d5e4d5;margin:7px 0}
+.github-start{margin-top:24px;background:#eff6df;border-radius:10px;padding:20px}
+.github-start div{display:inline-block;width:49%;padding:9px 0;color:#405d43}
+.github-start b{display:inline-grid;place-items:center;width:24px;height:24px;margin-right:8px;border-radius:50%;background:#75942d;color:#fff}
+@media(max-width:850px){.github-intro-grid,.desktop-explainer{grid-template-columns:1fr}.github-start div{width:100%}}

@@ -1,68 +1,767 @@
-import { useEffect, useMemo, useState } from 'react';
-import { lessons, problems, terms, type Lesson, type Role } from './data/content';
+import { useEffect, useMemo, useState } from "react";
+import "./github-intro.css";
+import {
+  lessons,
+  problems,
+  terms,
+  type Lesson,
+  type Role,
+} from "./data/content";
 
-type View = 'guide' | 'desktop' | 'problem' | 'terms';
-const captureNeeds: Record<string, { filename: string; title: string; scene: string; highlight: string }> = {
-  desktop: { filename: 'desktop-01-signed-in.png', title: '팀원 2. GitHub Desktop 로그인', scene: 'GitHub Desktop을 열고 로그인한 뒤, 왼쪽 위 Current repository 메뉴가 보이는 초기 화면', highlight: '계정 메뉴와 Current repository 영역' },
-  changes: { filename: 'desktop-02-changes-tab.png', title: '팀원 7. Changes 탭', scene: '파일 하나를 수정한 뒤 GitHub Desktop의 Changes 탭에서 파일 목록과 변경 줄이 보이는 화면', highlight: 'Changes 목록, 파일 체크박스, 초록/빨강 변경 줄' },
-  review: { filename: 'github-11-review-changes-retake.png', title: '팀장 4. PR 파일 검토', scene: 'GitHub 웹 PR의 Files changed 탭에서 Review changes 메뉴를 연 화면', highlight: 'Files changed 탭과 Comment / Approve / Request changes 선택지' },
+type View = "guide" | "desktop" | "problem" | "terms" | "github";
+const captureNeeds: Record<
+  string,
+  { filename: string; title: string; scene: string; highlight: string }
+> = {
+  desktop: {
+    filename: "desktop-01-signed-in.png",
+    title: "팀원 2. GitHub Desktop 로그인",
+    scene:
+      "GitHub Desktop을 열고 로그인한 뒤, 왼쪽 위 Current repository 메뉴가 보이는 초기 화면",
+    highlight: "계정 메뉴와 Current repository 영역",
+  },
+  changes: {
+    filename: "desktop-02-changes-tab.png",
+    title: "팀원 7. Changes 탭",
+    scene:
+      "파일 하나를 수정한 뒤 GitHub Desktop의 Changes 탭에서 파일 목록과 변경 줄이 보이는 화면",
+    highlight: "Changes 목록, 파일 체크박스, 초록/빨강 변경 줄",
+  },
+  review: {
+    filename: "github-11-review-changes-retake.png",
+    title: "팀장 4. PR 파일 검토",
+    scene: "GitHub 웹 PR의 Files changed 탭에서 Review changes 메뉴를 연 화면",
+    highlight: "Files changed 탭과 Comment / Approve / Request changes 선택지",
+  },
 };
 const practice: Record<string, { change: string; check: string }> = {
-  branch: { change: 'Issue #1 “팀원 소개 파일 추가”를 위해 feature/1-member-intro 브랜치를 만들었습니다.', check: 'Current branch가 main이 아니라 feature/1-member-intro인지 확인합니다.' },
-  edit: { change: 'members/member-intro.md에 팀원 소개 한 줄을 추가했습니다.', check: '파일 경로와 변경 목적이 Issue와 같은지 확인합니다.' },
-  commit: { change: '“Add member introduction example” Commit을 만들었습니다.', check: 'Commit 메시지만 읽어도 변경 내용을 알 수 있는지 확인합니다.' },
-  push: { change: 'Push 후 GitHub Pull requests 화면에서 새 브랜치를 확인할 수 있습니다.', check: 'Commit만 한 상태가 아닌지 GitHub 웹에서도 브랜치가 보이는지 확인합니다.' },
-  pr: { change: 'base: main, compare: feature/1-member-intro로 PR을 만들고 Issue #1을 연결했습니다.', check: 'base와 compare 방향이 뒤집히지 않았는지 확인합니다.' },
-  review: { change: 'Files changed에서 members/member-intro.md 한 파일과 추가한 한 줄을 검토했습니다.', check: '무관한 파일이나 민감정보가 섞이지 않았는지 확인합니다.' },
-  finish: { change: 'PR #2를 병합하고 feature/1-member-intro 브랜치를 정리했습니다.', check: 'Merged 상태와 최신 main을 확인한 뒤에만 브랜치를 정리합니다.' },
+  branch: {
+    change:
+      "Issue #1 “팀원 소개 파일 추가”를 위해 feature/1-member-intro 브랜치를 만들었습니다.",
+    check:
+      "Current branch가 main이 아니라 feature/1-member-intro인지 확인합니다.",
+  },
+  edit: {
+    change: "members/member-intro.md에 팀원 소개 한 줄을 추가했습니다.",
+    check: "파일 경로와 변경 목적이 Issue와 같은지 확인합니다.",
+  },
+  commit: {
+    change: "“Add member introduction example” Commit을 만들었습니다.",
+    check: "Commit 메시지만 읽어도 변경 내용을 알 수 있는지 확인합니다.",
+  },
+  push: {
+    change:
+      "Push 후 GitHub Pull requests 화면에서 새 브랜치를 확인할 수 있습니다.",
+    check:
+      "Commit만 한 상태가 아닌지 GitHub 웹에서도 브랜치가 보이는지 확인합니다.",
+  },
+  pr: {
+    change:
+      "base: main, compare: feature/1-member-intro로 PR을 만들고 Issue #1을 연결했습니다.",
+    check: "base와 compare 방향이 뒤집히지 않았는지 확인합니다.",
+  },
+  review: {
+    change:
+      "Files changed에서 members/member-intro.md 한 파일과 추가한 한 줄을 검토했습니다.",
+    check: "무관한 파일이나 민감정보가 섞이지 않았는지 확인합니다.",
+  },
+  finish: {
+    change: "PR #2를 병합하고 feature/1-member-intro 브랜치를 정리했습니다.",
+    check: "Merged 상태와 최신 main을 확인한 뒤에만 브랜치를 정리합니다.",
+  },
 };
 const desktopSteps = [
-  ['1', '로그인과 저장소 선택', 'GitHub Desktop을 열어 로그인하고 Current repository에서 팀 저장소를 확인합니다.', '팀원 2번 캡처: 로그인 후 초기 화면'],
-  ['2', 'Clone repository', 'File → Clone repository에서 팀 저장소를 선택합니다. 저장 위치는 찾기 쉬운 폴더로 정합니다.', 'Clone repository 창의 저장소 목록과 Clone 버튼'],
-  ['3', 'main과 Fetch / Pull', 'Current branch가 main인지 보고 Fetch origin을 누릅니다. Pull origin이 나타나면 최신 변경을 내려받습니다.', 'Fetch는 확인, Pull은 실제로 내려받기라는 차이를 설명'],
-  ['4', 'New branch', 'Current branch → New branch에서 feature/이슈번호-작업명 형식으로 새 브랜치를 만듭니다.', '브랜치 이름 입력칸과 Create branch 버튼'],
-  ['5', 'Changes 확인', '수정한 파일 이름과 변경 줄을 확인합니다. 의도하지 않은 파일은 Commit에 넣지 않습니다.', '팀원 7번 캡처: Changes 목록과 변경 줄'],
-  ['6', 'Commit', 'Summary에 무엇을 바꿨는지 쓰고 Commit to feature/…를 누릅니다. Commit은 내 컴퓨터 기록입니다.', 'Summary 입력칸과 Commit 버튼'],
-  ['7', 'Publish / Push와 마무리', '처음에는 Publish branch, 다음부터는 Push origin입니다. 병합 뒤 main으로 전환해 Pull origin을 누릅니다.', 'Push 버튼과 main 전환 뒤 Pull origin 버튼'],
+  [
+    "1",
+    "로그인과 저장소 선택",
+    "GitHub Desktop을 열어 로그인하고 Current repository에서 팀 저장소를 확인합니다.",
+    "팀원 2번 캡처: 로그인 후 초기 화면",
+  ],
+  [
+    "2",
+    "Clone repository",
+    "File → Clone repository에서 팀 저장소를 선택합니다. 저장 위치는 찾기 쉬운 폴더로 정합니다.",
+    "Clone repository 창의 저장소 목록과 Clone 버튼",
+  ],
+  [
+    "3",
+    "main과 Fetch / Pull",
+    "Current branch가 main인지 보고 Fetch origin을 누릅니다. Pull origin이 나타나면 최신 변경을 내려받습니다.",
+    "Fetch는 확인, Pull은 실제로 내려받기라는 차이를 설명",
+  ],
+  [
+    "4",
+    "New branch",
+    "Current branch → New branch에서 feature/이슈번호-작업명 형식으로 새 브랜치를 만듭니다.",
+    "브랜치 이름 입력칸과 Create branch 버튼",
+  ],
+  [
+    "5",
+    "Changes 확인",
+    "수정한 파일 이름과 변경 줄을 확인합니다. 의도하지 않은 파일은 Commit에 넣지 않습니다.",
+    "팀원 7번 캡처: Changes 목록과 변경 줄",
+  ],
+  [
+    "6",
+    "Commit",
+    "Summary에 무엇을 바꿨는지 쓰고 Commit to feature/…를 누릅니다. Commit은 내 컴퓨터 기록입니다.",
+    "Summary 입력칸과 Commit 버튼",
+  ],
+  [
+    "7",
+    "Publish / Push와 마무리",
+    "처음에는 Publish branch, 다음부터는 Push origin입니다. 병합 뒤 main으로 전환해 Pull origin을 누릅니다.",
+    "Push 버튼과 main 전환 뒤 Pull origin 버튼",
+  ],
 ] as const;
 const desktopVisuals: Record<string, Array<{ source: string; alt: string }>> = {
-  '1': [{ source: 'desktop-01-sign-in-options.png', alt: 'GitHub Desktop Options의 Sign in to GitHub.com 버튼 강조 화면' }, { source: 'desktop-02-authorize-open.png', alt: 'Chrome에서 GitHubDesktop.exe 열기 버튼을 강조한 화면' }],
-  '2': [{ source: 'desktop-03-clone-menu.png', alt: 'File 메뉴의 Clone repository 항목을 강조한 화면' }, { source: 'desktop-04-clone-dialog.png', alt: 'Clone a repository 창의 Clone 버튼 강조 화면' }],
-  '3': [{ source: 'desktop-05-main-fetch.png', alt: 'Current branch main과 Fetch origin 강조 화면' }, { source: 'desktop-10-fetch-warning.png', alt: '원격 Commit이 있어 Fetch가 필요한 경고 화면' }],
-  '4': [{ source: 'desktop-06-branch-menu.png', alt: 'Current branch 메뉴의 New branch 강조 화면' }, { source: 'desktop-07-create-branch.png', alt: 'Create a branch 이름 입력칸 강조 화면' }],
-  '5': [{ source: 'desktop-13-changes-develop.png', alt: 'Changes 탭과 변경 파일 강조 화면' }],
-  '6': [{ source: 'desktop-13-changes-develop.png', alt: 'Commit 입력과 Commit 버튼 강조 화면' }],
-  '7': [{ source: 'desktop-11-publish-branch.png', alt: 'Publish branch 버튼 강조 화면' }, { source: 'desktop-14-push-develop.png', alt: 'Push origin 버튼 강조 화면' }, { source: 'desktop-15-repo-branch-notice.png', alt: 'Compare and pull request 버튼 강조 화면' }, { source: 'desktop-12-pr-ready.png', alt: 'Create Pull Request 버튼 강조 화면' }, { source: 'desktop-16-pr-form.png', alt: 'Pull Request 작성과 Create pull request 버튼 강조 화면' }, { source: 'web-02-merge-ready.png', alt: 'Merge pull request 버튼 강조 화면' }, { source: 'web-03-confirm-merge.png', alt: 'Confirm merge 버튼 강조 화면' }, { source: 'web-04-merged.png', alt: 'Merged 상태 강조 화면' }],
+  "1": [
+    {
+      source: "desktop-01-sign-in-options.png",
+      alt: "GitHub Desktop Options의 Sign in to GitHub.com 버튼 강조 화면",
+    },
+    {
+      source: "desktop-02-authorize-open.png",
+      alt: "Chrome에서 GitHubDesktop.exe 열기 버튼을 강조한 화면",
+    },
+  ],
+  "2": [
+    {
+      source: "desktop-03-clone-menu.png",
+      alt: "File 메뉴의 Clone repository 항목을 강조한 화면",
+    },
+    {
+      source: "desktop-04-clone-dialog.png",
+      alt: "Clone a repository 창의 Clone 버튼 강조 화면",
+    },
+  ],
+  "3": [
+    {
+      source: "desktop-05-main-fetch.png",
+      alt: "Current branch main과 Fetch origin 강조 화면",
+    },
+    {
+      source: "desktop-10-fetch-warning.png",
+      alt: "원격 Commit이 있어 Fetch가 필요한 경고 화면",
+    },
+  ],
+  "4": [
+    {
+      source: "desktop-06-branch-menu.png",
+      alt: "Current branch 메뉴의 New branch 강조 화면",
+    },
+    {
+      source: "desktop-07-create-branch.png",
+      alt: "Create a branch 이름 입력칸 강조 화면",
+    },
+  ],
+  "5": [
+    {
+      source: "desktop-13-changes-develop.png",
+      alt: "Changes 탭과 변경 파일 강조 화면",
+    },
+  ],
+  "6": [
+    {
+      source: "desktop-13-changes-develop.png",
+      alt: "Commit 입력과 Commit 버튼 강조 화면",
+    },
+  ],
+  "7": [
+    {
+      source: "desktop-11-publish-branch.png",
+      alt: "Publish branch 버튼 강조 화면",
+    },
+    {
+      source: "desktop-14-push-develop.png",
+      alt: "Push origin 버튼 강조 화면",
+    },
+    {
+      source: "desktop-15-repo-branch-notice.png",
+      alt: "Compare and pull request 버튼 강조 화면",
+    },
+    {
+      source: "desktop-12-pr-ready.png",
+      alt: "Create Pull Request 버튼 강조 화면",
+    },
+    {
+      source: "desktop-16-pr-form.png",
+      alt: "Pull Request 작성과 Create pull request 버튼 강조 화면",
+    },
+    {
+      source: "web-02-merge-ready.png",
+      alt: "Merge pull request 버튼 강조 화면",
+    },
+    { source: "web-03-confirm-merge.png", alt: "Confirm merge 버튼 강조 화면" },
+    { source: "web-04-merged.png", alt: "Merged 상태 강조 화면" },
+  ],
 };
 
-function CaptureRequest({ need }: { need: { filename: string; title: string; scene: string; highlight: string } }) {
-  return <section className="capture-request"><p className="eyebrow">재촬영 필요</p><h4>{need.title}</h4><p><b>찍을 장면:</b> {need.scene}</p><p><b>강조할 곳:</b> {need.highlight}</p><code>public/annotated/desktop/{need.filename}</code><small>개인 계정 이름·이메일·알림·로컬 폴더 경로는 가린 뒤, 전체 화면과 강조 확대 화면을 각각 1장씩 준비하세요.</small></section>;
+function CaptureRequest({
+  need,
+}: {
+  need: { filename: string; title: string; scene: string; highlight: string };
+}) {
+  return (
+    <section className="capture-request">
+      <p className="eyebrow">재촬영 필요</p>
+      <h4>{need.title}</h4>
+      <p>
+        <b>찍을 장면:</b> {need.scene}
+      </p>
+      <p>
+        <b>강조할 곳:</b> {need.highlight}
+      </p>
+      <code>public/annotated/desktop/{need.filename}</code>
+      <small>
+        개인 계정 이름·이메일·알림·로컬 폴더 경로는 가린 뒤, 전체 화면과 강조
+        확대 화면을 각각 1장씩 준비하세요.
+      </small>
+    </section>
+  );
 }
 
-function Visual({ lesson, open }: { lesson: Lesson; open: (src: string, alt: string) => void }) {
+function Visual({
+  lesson,
+  open,
+}: {
+  lesson: Lesson;
+  open: (src: string, alt: string) => void;
+}) {
   const need = captureNeeds[lesson.id];
-  if (!lesson.visual) return need ? <CaptureRequest need={need} /> : <div className="visual missing"><strong>이 단계는 화면보다 작업 확인이 중요합니다.</strong><small>{lesson.tool}에서 안내 문장을 따라 진행하세요.</small></div>;
-  const desktop = lesson.visual.startsWith('desktop:');
-  const filename = desktop ? lesson.visual.replace('desktop:', '') : lesson.visual.startsWith('focus-') ? `${lesson.visual}.png` : lesson.visual.replace('.png', '-annotated.png');
-  const src = `${import.meta.env.BASE_URL}annotated/${desktop ? 'desktop' : 'github'}/${filename}`;
-  const alt = `${lesson.title}: 눌러야 할 위치를 표시한 개인정보 마스킹 ${desktop ? 'GitHub Desktop' : 'GitHub'} 화면`;
-  return <figure className="visual captured"><button className="image-button" onClick={() => open(src, alt)} aria-label={`${lesson.title} 이미지 확대 보기`}><img src={src} alt={alt} onError={(event) => event.currentTarget.closest('figure')?.classList.add('broken')} /></button><figcaption><button onClick={() => open(src, alt)}>확대 보기</button> · 개인정보 마스킹본</figcaption></figure>;
+  if (!lesson.visual)
+    return need ? (
+      <CaptureRequest need={need} />
+    ) : (
+      <div className="visual missing">
+        <strong>이 단계는 화면보다 작업 확인이 중요합니다.</strong>
+        <small>{lesson.tool}에서 안내 문장을 따라 진행하세요.</small>
+      </div>
+    );
+  const desktop = lesson.visual.startsWith("desktop:");
+  const filename = desktop
+    ? lesson.visual.replace("desktop:", "")
+    : lesson.visual.startsWith("focus-")
+      ? `${lesson.visual}.png`
+      : lesson.visual.replace(".png", "-annotated.png");
+  const src = `${import.meta.env.BASE_URL}annotated/${desktop ? "desktop" : "github"}/${filename}`;
+  const alt = `${lesson.title}: 눌러야 할 위치를 표시한 개인정보 마스킹 ${desktop ? "GitHub Desktop" : "GitHub"} 화면`;
+  return (
+    <figure className="visual captured">
+      <button
+        className="image-button"
+        onClick={() => open(src, alt)}
+        aria-label={`${lesson.title} 이미지 확대 보기`}
+      >
+        <img
+          src={src}
+          alt={alt}
+          onError={(event) =>
+            event.currentTarget.closest("figure")?.classList.add("broken")
+          }
+        />
+      </button>
+      <figcaption>
+        <button onClick={() => open(src, alt)}>확대 보기</button> · 개인정보
+        마스킹본
+      </figcaption>
+    </figure>
+  );
+}
+
+function GitHubIntro() {
+  return (
+    <section className="page github-intro">
+      <p className="eyebrow">GITHUB BASICS</p>
+      <h2>깃허브란?</h2>
+      <p className="page-lead">
+        GitHub는 코드를 보관하는 곳을 넘어, 팀이 같은 프로젝트를 함께 만들고
+        변경 과정을 확인하는 협업 공간입니다.
+      </p>
+      <div className="github-intro-grid">
+        <article>
+          <span>01</span>
+          <h3>GitHub의 역할</h3>
+          <p>
+            저장소에 파일과 변경 기록을 모으고, Issue로 할 일을 나누며, Pull
+            Request로 변경을 검토합니다.
+          </p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>왜 사용하나요?</h3>
+          <p>
+            누가 무엇을 바꿨는지 남고, 실수한 변경을 되돌릴 수 있으며, 대화와
+            검토 내용이 프로젝트 안에 보존됩니다.
+          </p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>팀 프로젝트에서 하는 일</h3>
+          <p>
+            팀원은 브랜치에서 작업하고, Commit·Push로 공유한 뒤 PR을 통해 main에
+            반영을 요청합니다.
+          </p>
+        </article>
+      </div>
+      <section className="desktop-explainer">
+        <div>
+          <p className="eyebrow">GITHUB DESKTOP</p>
+          <h3>GitHub Desktop은 무엇인가요?</h3>
+          <p>
+            GitHub Desktop은 복잡한 명령어 대신 화면의 버튼으로 저장소 복제,
+            브랜치 생성, Commit, Push, Pull을 연습하게 해주는 프로그램입니다.
+          </p>
+          <a
+            href="https://desktop.github.com/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub Desktop 공식 다운로드 ↗
+          </a>
+        </div>
+        <ol>
+          <li>Clone: GitHub 저장소를 내 컴퓨터로 복사</li>
+          <li>Branch: 내 작업 공간을 분리</li>
+          <li>Commit: 내 컴퓨터에 변경 기록</li>
+          <li>Push / Pull: 팀과 변경을 주고받기</li>
+        </ol>
+      </section>
+      <section className="github-start">
+        <p className="eyebrow">처음 시작하는 순서</p>
+        <div>
+          <b>1</b> GitHub 계정과 팀 저장소 확인
+        </div>
+        <div>
+          <b>2</b> 공식 사이트에서 GitHub Desktop 설치 후 로그인
+        </div>
+        <div>
+          <b>3</b> Clone → Branch → 파일 수정 → Commit → Push
+        </div>
+        <div>
+          <b>4</b> GitHub 웹에서 Pull Request와 리뷰 진행
+        </div>
+      </section>
+    </section>
+  );
 }
 
 function DesktopGuide() {
-  return <section className="page desktop-page"><p className="eyebrow">GITHUB DESKTOP</p><h2>버튼으로 배우는 GitHub Desktop</h2><p>아래 순서는 팀원이 실제로 작업할 때 보는 흐름입니다. 제공받은 화면은 개인정보를 가리고 강조 표시를 더해 넣었습니다.</p><div className="desktop-grid">{desktopSteps.map(([number, title, instruction, capture]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{instruction}</p>{desktopVisuals[number]?.map((image) => <figure className="desktop-shot" key={image.source}><img src={`${import.meta.env.BASE_URL}annotated/desktop/${image.source}`} alt={image.alt} /><figcaption>실제 화면 예시</figcaption></figure>)}<small>촬영 가이드: {capture}</small></article>)}</div><section className="desktop-warning"><b>가장 많이 헷갈리는 두 가지</b><p><strong>Commit</strong>은 내 컴퓨터에 기록하는 일이고, <strong>Push / Publish branch</strong>는 그 기록을 GitHub에 공유하는 일입니다. <strong>Fetch</strong>는 새 변경이 있는지 확인하고, <strong>Pull</strong>은 새 변경을 실제로 내려받습니다.</p></section><div className="capture-grid"><CaptureRequest need={captureNeeds.changes} /><CaptureRequest need={captureNeeds.review} /></div></section>;
+  return (
+    <section className="page desktop-page">
+      <p className="eyebrow">GITHUB DESKTOP</p>
+      <h2>버튼으로 배우는 GitHub Desktop</h2>
+      <p>
+        아래 순서는 팀원이 실제로 작업할 때 보는 흐름입니다. 제공받은 화면은
+        개인정보를 가리고 강조 표시를 더해 넣었습니다.
+      </p>
+      <div className="desktop-grid">
+        {desktopSteps.map(([number, title, instruction, capture]) => (
+          <article key={number}>
+            <span>{number}</span>
+            <h3>{title}</h3>
+            <p>{instruction}</p>
+            {desktopVisuals[number]?.map((image) => (
+              <figure className="desktop-shot" key={image.source}>
+                <img
+                  src={`${import.meta.env.BASE_URL}annotated/desktop/${image.source}`}
+                  alt={image.alt}
+                />
+                <figcaption>실제 화면 예시</figcaption>
+              </figure>
+            ))}
+            <small>촬영 가이드: {capture}</small>
+          </article>
+        ))}
+      </div>
+      <section className="desktop-warning">
+        <b>가장 많이 헷갈리는 두 가지</b>
+        <p>
+          <strong>Commit</strong>은 내 컴퓨터에 기록하는 일이고,{" "}
+          <strong>Push / Publish branch</strong>는 그 기록을 GitHub에 공유하는
+          일입니다. <strong>Fetch</strong>는 새 변경이 있는지 확인하고,{" "}
+          <strong>Pull</strong>은 새 변경을 실제로 내려받습니다.
+        </p>
+      </section>
+      <div className="capture-grid">
+        <CaptureRequest need={captureNeeds.changes} />
+        <CaptureRequest need={captureNeeds.review} />
+      </div>
+    </section>
+  );
 }
 
 function Simulation() {
   const [answer, setAnswer] = useState<string | null>(null);
-  return <section className="simulation"><p className="eyebrow">1분 확인</p><h3>Commit을 마친 뒤, 팀원이 변경을 보게 하려면?</h3>{[['commit', 'Commit만 하고 팀원에게 완료라고 알린다'], ['push', 'Push origin을 눌러 GitHub에 브랜치를 올린다'], ['main', 'main 브랜치에서 파일을 다시 수정한다']].map(([id, label]) => <button key={id} className={answer === id ? (id === 'push' ? 'correct' : 'wrong') : ''} onClick={() => setAnswer(id)}>{label}</button>)}{answer && <p role="status">{answer === 'push' ? '정답입니다. Commit은 내 컴퓨터의 기록이고 Push가 GitHub에 공유하는 단계입니다.' : '다시 생각해 보세요. 팀원이 보려면 GitHub에 브랜치를 올리는 Push가 필요합니다.'}</p>}</section>;
+  return (
+    <section className="simulation">
+      <p className="eyebrow">1분 확인</p>
+      <h3>Commit을 마친 뒤, 팀원이 변경을 보게 하려면?</h3>
+      {[
+        ["commit", "Commit만 하고 팀원에게 완료라고 알린다"],
+        ["push", "Push origin을 눌러 GitHub에 브랜치를 올린다"],
+        ["main", "main 브랜치에서 파일을 다시 수정한다"],
+      ].map(([id, label]) => (
+        <button
+          key={id}
+          className={answer === id ? (id === "push" ? "correct" : "wrong") : ""}
+          onClick={() => setAnswer(id)}
+        >
+          {label}
+        </button>
+      ))}
+      {answer && (
+        <p role="status">
+          {answer === "push"
+            ? "정답입니다. Commit은 내 컴퓨터의 기록이고 Push가 GitHub에 공유하는 단계입니다."
+            : "다시 생각해 보세요. 팀원이 보려면 GitHub에 브랜치를 올리는 Push가 필요합니다."}
+        </p>
+      )}
+    </section>
+  );
 }
 
 export function App() {
-  const [role, setRole] = useState<Role>('member'); const [view, setView] = useState<View>('guide'); const [step, setStep] = useState(0); const [query, setQuery] = useState(''); const [modal, setModal] = useState<{ src: string; alt: string } | null>(null); const [done, setDone] = useState<string[]>(() => JSON.parse(localStorage.getItem('guide-progress') || '[]'));
-  const list = lessons[role]; const lesson = list[step]; const progress = Math.round(list.filter((item) => done.includes(`${role}:${item.id}`)).length / list.length * 100);
-  const searchMatches = useMemo(() => query.trim() ? list.map((item, index) => ({ item, index })).filter(({ item }) => `${item.title} ${item.tool} ${item.action} ${item.why}`.toLowerCase().includes(query.toLowerCase())) : [], [list, query]);
-  useEffect(() => localStorage.setItem('guide-progress', JSON.stringify(done)), [done]); useEffect(() => { setStep(0); setQuery(''); }, [role]); useEffect(() => { const close = (event: KeyboardEvent) => event.key === 'Escape' && setModal(null); window.addEventListener('keydown', close); return () => window.removeEventListener('keydown', close); }, []);
-  const toggleComplete = () => setDone((items) => items.includes(`${role}:${lesson.id}`) ? items.filter((item) => item !== `${role}:${lesson.id}`) : [...items, `${role}:${lesson.id}`]); const find = (value: string) => value.toLowerCase().includes(query.toLowerCase());
-  return <div><header><div className="brand"><b>GitHub 팀프로젝트</b><small>비전공자용 화면 중심 실습 가이드</small></div><button onClick={() => window.print()}>인쇄 / PDF</button></header><div className="layout"><aside><p className="eyebrow">START HERE</p><h1>처음이어도<br /><em>같이 만들 수 있게.</em></h1><p>GitHub Desktop으로 안전하게 작업하고, GitHub 웹에서 PR과 리뷰를 완성합니다.</p><nav><button className={view === 'guide' ? 'on' : ''} onClick={() => setView('guide')}>실습 가이드</button><button className={view === 'desktop' ? 'on' : ''} onClick={() => setView('desktop')}>GitHub Desktop</button><button className={view === 'problem' ? 'on' : ''} onClick={() => setView('problem')}>문제가 생겼나요?</button><button className={view === 'terms' ? 'on' : ''} onClick={() => setView('terms')}>용어부터 배우기</button></nav><hr /><span className="eyebrow">나의 역할</span><button className={role === 'member' ? 'role on' : 'role'} onClick={() => setRole('member')}>하는 팀원입니다</button><button className={role === 'leader' ? 'role on' : 'role'} onClick={() => setRole('leader')}>하는 팀장입니다</button></aside><main><div className="toolbar"><label>검색 <input aria-label="가이드 검색" placeholder="예: Push, 충돌, 브랜치" value={query} onChange={(event) => setQuery(event.target.value)} /></label><small>진행 상태는 이 브라우저에 저장됩니다.</small></div>{view === 'desktop' && <DesktopGuide />}{view === 'guide' && <><section className="hero"><div><p className="eyebrow">{role === 'member' ? 'TEAM MEMBER PATH' : 'TEAM LEADER PATH'}</p><h2>{role === 'member' ? '팀원으로 첫 PR 보내기' : '안전한 작업 흐름 만들기'}</h2><p>실제 “팀원 소개 파일 추가” 프로젝트 변경 사례를 따라, 한 단계씩 진행합니다.</p></div><div className="progress"><b>{progress}%</b><small>나의 진행률</small><div><i style={{ width: `${progress}%` }} /></div></div></section>{searchMatches.length > 0 && <section className="search-results" aria-label="가이드 검색 결과">{searchMatches.map(({ item, index }) => <button key={item.id} onClick={() => { setStep(index); setQuery(''); }}>{index + 1}. {item.title} <small>{item.tool}</small></button>)}</section>}<div className="notice">단계 제목을 누르면 오른쪽의 큰 실습 카드가 바뀝니다. 설명은 카드에서 전체 문장으로 읽고, 목록은 단계 이름과 도구만 빠르게 확인하세요.</div><div className="columns"><section><div className="section-title"><span><p className="eyebrow">{role === 'member' ? 'MEMBER JOURNEY' : 'LEADER JOURNEY'}</p><h3>{role === 'member' ? '팀원 과정' : '팀장 과정'}</h3></span><small>{list.length} steps</small></div>{list.map((item, index) => <button className={`row ${index === step ? 'current' : ''}`} key={`${role}:${item.id}`} onClick={() => setStep(index)}><span>{done.includes(`${role}:${item.id}`) ? '✓' : String(index + 1).padStart(2, '0')}</span><b>{item.title}<small>{item.tool}</small></b>›</button>)}</section><article className="card"><div className="meta"><span>{lesson.tool}</span> STEP {step + 1} / {list.length}</div><h3>{lesson.title}</h3><p className="lead">{lesson.action}</p>{practice[lesson.id] && <section className="practice"><p className="eyebrow">실제 프로젝트 변경 사례</p><b>{practice[lesson.id].change}</b><small>확인할 것: {practice[lesson.id].check}</small></section>}<Visual lesson={lesson} open={(src, alt) => setModal({ src, alt })} /><div className="facts"><div><b>왜 필요한가요?</b><p>{lesson.why}</p></div><div><b>성공 기준</b><p>{lesson.success}</p></div><div><b>자주 하는 실수</b><p>{lesson.mistake}</p></div><div><b>복구 방법</b><p>{lesson.recovery}</p></div></div><label className="check"><input type="checkbox" checked={done.includes(`${role}:${lesson.id}`)} onChange={toggleComplete} /> 이 단계를 완료했어요</label><div className="pager"><button disabled={step === 0} onClick={() => setStep(step - 1)}>← 이전</button><button disabled={step === list.length - 1} onClick={() => setStep(step + 1)}>다음 →</button></div></article></div>{role === 'member' && <Simulation />}</>}{view === 'problem' && <section className="page"><p className="eyebrow">TROUBLESHOOTING</p><h2>문제가 생겼나요?</h2><p>증상과 화면을 확인한 뒤, 안전한 해결 순서를 따르세요.</p><div className="cards">{problems.filter((problem) => problem.some(find)).map(([title, cause, fix, ask]) => <article key={title}><h3>{title}</h3><p><b>가능한 원인</b> {cause}</p><p className="fix"><b>안전한 해결 순서</b> {fix}</p><p><b>팀장에게 알릴 시점</b> {ask}</p></article>)}</div></section>}{view === 'terms' && <section className="page"><p className="eyebrow">GLOSSARY</p><h2>용어부터 배우기</h2><div className="terms">{terms.filter((term) => term.some(find)).map(([term, description]) => <article key={term}><b>{term}</b><p>{description}</p></article>)}</div></section>}</main></div>{modal && <div className="modal" role="dialog" aria-modal="true" aria-label="스크린샷 확대 보기" onClick={() => setModal(null)}><div onClick={(event) => event.stopPropagation()}><button className="close" onClick={() => setModal(null)} aria-label="확대 이미지 닫기">×</button><img src={modal.src} alt={modal.alt} /></div></div>}</div>;
+  const [role, setRole] = useState<Role>("member");
+  const [view, setView] = useState<View>("guide");
+  const [step, setStep] = useState(0);
+  const [query, setQuery] = useState("");
+  const [modal, setModal] = useState<{ src: string; alt: string } | null>(null);
+  const [done, setDone] = useState<string[]>(() =>
+    JSON.parse(localStorage.getItem("guide-progress") || "[]"),
+  );
+  const list = lessons[role];
+  const lesson = list[step];
+  const progress = Math.round(
+    (list.filter((item) => done.includes(`${role}:${item.id}`)).length /
+      list.length) *
+      100,
+  );
+  const searchMatches = useMemo(
+    () =>
+      query.trim()
+        ? list
+            .map((item, index) => ({ item, index }))
+            .filter(({ item }) =>
+              `${item.title} ${item.tool} ${item.action} ${item.why}`
+                .toLowerCase()
+                .includes(query.toLowerCase()),
+            )
+        : [],
+    [list, query],
+  );
+  useEffect(
+    () => localStorage.setItem("guide-progress", JSON.stringify(done)),
+    [done],
+  );
+  useEffect(() => {
+    setStep(0);
+    setQuery("");
+  }, [role]);
+  useEffect(() => {
+    const close = (event: KeyboardEvent) =>
+      event.key === "Escape" && setModal(null);
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, []);
+  const toggleComplete = () =>
+    setDone((items) =>
+      items.includes(`${role}:${lesson.id}`)
+        ? items.filter((item) => item !== `${role}:${lesson.id}`)
+        : [...items, `${role}:${lesson.id}`],
+    );
+  const find = (value: string) =>
+    value.toLowerCase().includes(query.toLowerCase());
+  return (
+    <div>
+      <header>
+        <div className="brand">
+          <b>GitHub 팀프로젝트</b>
+          <small>비전공자용 화면 중심 실습 가이드</small>
+        </div>
+        <button onClick={() => window.print()}>인쇄 / PDF</button>
+      </header>
+      <div className="layout">
+        <aside>
+          <p className="eyebrow">START HERE</p>
+          <h1>
+            처음이어도
+            <br />
+            <em>같이 만들 수 있게.</em>
+          </h1>
+          <p>
+            GitHub Desktop으로 안전하게 작업하고, GitHub 웹에서 PR과 리뷰를
+            완성합니다.
+          </p>
+          <nav>
+            <button
+              className={view === "guide" ? "on" : ""}
+              onClick={() => setView("guide")}
+            >
+              실습 가이드
+            </button>
+            <button
+              className={view === "desktop" ? "on" : ""}
+              onClick={() => setView("desktop")}
+            >
+              GitHub Desktop
+            </button>
+            <button
+              className={view === "github" ? "on" : ""}
+              onClick={() => setView("github")}
+            >
+              깃허브란?
+            </button>
+            <button
+              className={view === "problem" ? "on" : ""}
+              onClick={() => setView("problem")}
+            >
+              문제가 생겼나요?
+            </button>
+            <button
+              className={view === "terms" ? "on" : ""}
+              onClick={() => setView("terms")}
+            >
+              용어부터 배우기
+            </button>
+          </nav>
+          <hr />
+          <span className="eyebrow">나의 역할</span>
+          <button
+            className={role === "member" ? "role on" : "role"}
+            onClick={() => setRole("member")}
+          >
+            하는 팀원입니다
+          </button>
+          <button
+            className={role === "leader" ? "role on" : "role"}
+            onClick={() => setRole("leader")}
+          >
+            하는 팀장입니다
+          </button>
+        </aside>
+        <main>
+          <div className="toolbar">
+            <label>
+              검색{" "}
+              <input
+                aria-label="가이드 검색"
+                placeholder="예: Push, 충돌, 브랜치"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            </label>
+            <small>진행 상태는 이 브라우저에 저장됩니다.</small>
+          </div>
+          {view === "desktop" && <DesktopGuide />}
+          {view === "github" && <GitHubIntro />}
+          {view === "guide" && (
+            <>
+              <section className="hero">
+                <div>
+                  <p className="eyebrow">
+                    {role === "member"
+                      ? "TEAM MEMBER PATH"
+                      : "TEAM LEADER PATH"}
+                  </p>
+                  <h2>
+                    {role === "member"
+                      ? "팀원으로 첫 PR 보내기"
+                      : "안전한 작업 흐름 만들기"}
+                  </h2>
+                  <p>
+                    실제 “팀원 소개 파일 추가” 프로젝트 변경 사례를 따라, 한
+                    단계씩 진행합니다.
+                  </p>
+                </div>
+                <div className="progress">
+                  <b>{progress}%</b>
+                  <small>나의 진행률</small>
+                  <div>
+                    <i style={{ width: `${progress}%` }} />
+                  </div>
+                </div>
+              </section>
+              {searchMatches.length > 0 && (
+                <section
+                  className="search-results"
+                  aria-label="가이드 검색 결과"
+                >
+                  {searchMatches.map(({ item, index }) => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setStep(index);
+                        setQuery("");
+                      }}
+                    >
+                      {index + 1}. {item.title} <small>{item.tool}</small>
+                    </button>
+                  ))}
+                </section>
+              )}
+              <div className="notice">
+                단계 제목을 누르면 오른쪽의 큰 실습 카드가 바뀝니다. 설명은
+                카드에서 전체 문장으로 읽고, 목록은 단계 이름과 도구만 빠르게
+                확인하세요.
+              </div>
+              <div className="columns">
+                <section>
+                  <div className="section-title">
+                    <span>
+                      <p className="eyebrow">
+                        {role === "member"
+                          ? "MEMBER JOURNEY"
+                          : "LEADER JOURNEY"}
+                      </p>
+                      <h3>{role === "member" ? "팀원 과정" : "팀장 과정"}</h3>
+                    </span>
+                    <small>{list.length} steps</small>
+                  </div>
+                  {list.map((item, index) => (
+                    <button
+                      className={`row ${index === step ? "current" : ""}`}
+                      key={`${role}:${item.id}`}
+                      onClick={() => setStep(index)}
+                    >
+                      <span>
+                        {done.includes(`${role}:${item.id}`)
+                          ? "✓"
+                          : String(index + 1).padStart(2, "0")}
+                      </span>
+                      <b>
+                        {item.title}
+                        <small>{item.tool}</small>
+                      </b>
+                      ›
+                    </button>
+                  ))}
+                </section>
+                <article className="card">
+                  <div className="meta">
+                    <span>{lesson.tool}</span> STEP {step + 1} / {list.length}
+                  </div>
+                  <h3>{lesson.title}</h3>
+                  <p className="lead">{lesson.action}</p>
+                  {practice[lesson.id] && (
+                    <section className="practice">
+                      <p className="eyebrow">실제 프로젝트 변경 사례</p>
+                      <b>{practice[lesson.id].change}</b>
+                      <small>확인할 것: {practice[lesson.id].check}</small>
+                    </section>
+                  )}
+                  <Visual
+                    lesson={lesson}
+                    open={(src, alt) => setModal({ src, alt })}
+                  />
+                  <div className="facts">
+                    <div>
+                      <b>왜 필요한가요?</b>
+                      <p>{lesson.why}</p>
+                    </div>
+                    <div>
+                      <b>성공 기준</b>
+                      <p>{lesson.success}</p>
+                    </div>
+                    <div>
+                      <b>자주 하는 실수</b>
+                      <p>{lesson.mistake}</p>
+                    </div>
+                    <div>
+                      <b>복구 방법</b>
+                      <p>{lesson.recovery}</p>
+                    </div>
+                  </div>
+                  <label className="check">
+                    <input
+                      type="checkbox"
+                      checked={done.includes(`${role}:${lesson.id}`)}
+                      onChange={toggleComplete}
+                    />{" "}
+                    이 단계를 완료했어요
+                  </label>
+                  <div className="pager">
+                    <button
+                      disabled={step === 0}
+                      onClick={() => setStep(step - 1)}
+                    >
+                      ← 이전
+                    </button>
+                    <button
+                      disabled={step === list.length - 1}
+                      onClick={() => setStep(step + 1)}
+                    >
+                      다음 →
+                    </button>
+                  </div>
+                </article>
+              </div>
+              {role === "member" && <Simulation />}
+            </>
+          )}
+          {view === "problem" && (
+            <section className="page">
+              <p className="eyebrow">TROUBLESHOOTING</p>
+              <h2>문제가 생겼나요?</h2>
+              <p>증상과 화면을 확인한 뒤, 안전한 해결 순서를 따르세요.</p>
+              <div className="cards">
+                {problems
+                  .filter((problem) => problem.some(find))
+                  .map(([title, cause, fix, ask]) => (
+                    <article key={title}>
+                      <h3>{title}</h3>
+                      <p>
+                        <b>가능한 원인</b> {cause}
+                      </p>
+                      <p className="fix">
+                        <b>안전한 해결 순서</b> {fix}
+                      </p>
+                      <p>
+                        <b>팀장에게 알릴 시점</b> {ask}
+                      </p>
+                    </article>
+                  ))}
+              </div>
+            </section>
+          )}
+          {view === "terms" && (
+            <section className="page">
+              <p className="eyebrow">GLOSSARY</p>
+              <h2>용어부터 배우기</h2>
+              <div className="terms">
+                {terms
+                  .filter((term) => term.some(find))
+                  .map(([term, description]) => (
+                    <article key={term}>
+                      <b>{term}</b>
+                      <p>{description}</p>
+                    </article>
+                  ))}
+              </div>
+            </section>
+          )}
+        </main>
+      </div>
+      {modal && (
+        <div
+          className="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="스크린샷 확대 보기"
+          onClick={() => setModal(null)}
+        >
+          <div onClick={(event) => event.stopPropagation()}>
+            <button
+              className="close"
+              onClick={() => setModal(null)}
+              aria-label="확대 이미지 닫기"
+            >
+              ×
+            </button>
+            <img src={modal.src} alt={modal.alt} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
