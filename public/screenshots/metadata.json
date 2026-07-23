@@ -1,8 +1,8 @@
 [
-  {"id":"github-01-repository-main","title":"저장소 메인 화면","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-01-repository-main.png","alt":"toxh13/test-only 저장소의 main 화면"},
-  {"id":"github-04-new-issue","title":"새 Issue 작성","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-04-new-issue.png","alt":"GitHub 새 Issue 작성 화면"},
-  {"id":"github-06-new-pull-request","title":"새 Pull Request 만들기","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-06-new-pull-request.png","alt":"main과 feature/1-member-intro를 비교하는 Pull Request 작성 화면"},
-  {"id":"github-10-files-changed","title":"변경 파일 확인","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-10-files-changed.png","alt":"Pull Request의 Files changed 화면"},
-  {"id":"github-11-review-changes","title":"Review changes 메뉴","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-11-review-changes.png","alt":"Review changes에서 Comment, Approve, Request changes를 선택하는 화면"},
-  {"id":"github-14-merged","title":"병합 완료","source":"github-web","captureDate":"2026-07-23","status":"captured","image":"/screenshots/github/github-14-merged.png","alt":"Pull Request가 main에 병합된 화면"}
+  {"id":"github-04-new-issue","title":"New issue 진입","source":"GitHub 웹 데모 저장소","captureDate":"2026-07-23","status":"masked","image":"/annotated/github/focus-github-04-new-issue.png","alt":"New issue 버튼을 표시한 마스킹 화면"},
+  {"id":"github-05-pull-requests","title":"Pull requests 진입","source":"GitHub 웹 데모 저장소","captureDate":"2026-07-23","status":"masked","image":"/annotated/github/focus-github-05-pull-requests-tab.png","alt":"New pull request 버튼을 표시한 마스킹 화면"},
+  {"id":"github-06-branch","title":"브랜치와 PR 만들기","source":"GitHub 웹 데모 저장소","captureDate":"2026-07-23","status":"masked","image":"/annotated/github/focus-github-06-new-pull-request.png","alt":"base와 compare를 표시한 마스킹 화면"},
+  {"id":"github-08-edit","title":"파일 수정","source":"GitHub 웹 데모 저장소","captureDate":"2026-07-23","status":"masked","image":"/annotated/github/focus-github-08-file-edit.png","alt":"편집 영역을 표시한 마스킹 화면"},
+  {"id":"github-10-review","title":"변경 파일 검토","source":"GitHub 웹 데모 저장소","captureDate":"2026-07-23","status":"masked","image":"/annotated/github/focus-github-10-files-changed.png","alt":"Files changed 탭을 표시한 마스킹 화면"},
+  {"id":"github-14-merged","title":"병합 완료","source":"GitHub 웹 데모 저장소","captureDate":"2026-07-23","status":"masked","image":"/annotated/github/focus-github-14-merged.png","alt":"Merged 상태를 표시한 마스킹 화면"}
 ]

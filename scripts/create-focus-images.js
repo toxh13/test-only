@@ -1,5 +1,6 @@
 import sharp from 'sharp';
 import { mkdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 const images = {
     'github-04-new-issue.png': { crop: [.05, .14, .90, .70], label: 'Issue 제목과 설명 입력', box: [.05, .08, .90, .78], markers: [[.22, .20, '1'], [.27, .50, '2'], [.76, .88, '3']] },
     'github-05-pull-requests-tab.png': { crop: [.63, .23, .35, .18], label: 'New pull request', box: [.04, .08, .92, .82], markers: [[.56, .50, '1']] },
@@ -16,7 +17,11 @@ const esc = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 function svg(width, height, focus) { const [x, y, w, h] = focus.box.map((value, index) => index % 2 ? value * height : value * width); const marker = focus.markers.map(([mx, my, text]) => `<circle cx="${mx * width}" cy="${my * height}" r="${Math.max(18, width * .04)}" fill="#e8f35f" stroke="#17382d" stroke-width="4"/><text x="${mx * width}" y="${my * height + 7}" text-anchor="middle" font-family="Arial" font-size="${Math.max(18, width * .045)}" font-weight="700" fill="#17382d">${text}</text>`).join(''); return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="#e8f35f" fill-opacity=".15" stroke="#d8ed45" stroke-width="5"/>${marker}<rect x="12" y="12" width="${Math.min(width - 24, Math.max(180, focus.label.length * 16))}" height="32" rx="8" fill="#17382d"/><text x="24" y="34" font-family="Arial" font-size="17" font-weight="700" fill="#fff">${esc(focus.label)}</text></svg>`; }
 await mkdir('public/annotated/github', { recursive: true });
 for (const [file, focus] of Object.entries(images)) {
-    const source = `public/screenshots/github/${file}`;
+    const source = `private-captures/github/${file}`;
+    if (!existsSync(source)) {
+        console.error(`Missing private source: ${source}. Public assets are never used as capture sources.`);
+        process.exit(1);
+    }
     const meta = await sharp(source).metadata();
     if (!meta.width || !meta.height)
         continue;

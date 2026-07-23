@@ -2,10 +2,12 @@ export type Role = 'member' | 'leader';
 export type Lesson = {
     id: string;
     title: string;
+    tool: 'GitHub Desktop' | 'GitHub 웹' | 'VS Code';
     action: string;
     why: string;
     success: string;
-    type: 'real' | 'concept';
+    mistake: string;
+    recovery: string;
     visual?: string;
 };
 export declare const lessons: Record<Role, Lesson[]>;
